@@ -1,6 +1,6 @@
 import { Task } from '../types/Task';
 
-const API_URL = 'https://apitodolist-luz8.onrender.com/api/tarefas';
+const API_URL = 'https://apitodolist-8f8q.onrender.com/api/tarefas';
 
 export const getTasks = async (): Promise<Task[]> => {
   const res = await fetch(API_URL);

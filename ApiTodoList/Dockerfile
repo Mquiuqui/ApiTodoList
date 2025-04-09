@@ -1,16 +1,25 @@
+# Etapa base
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-WORKDIR /ApiTodoList/app
+WORKDIR /app
 EXPOSE 80
 
+# Etapa de build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /ApiTodoList/src
+WORKDIR /src
 
+# Copia apenas o .csproj primeiro
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copia o restante do código
 COPY . .
 
-RUN dotnet restore
-RUN dotnet publish -c Release -o /ApiTodoList/app/publish
+# Publica o app
+RUN dotnet publish -c Release -o /app/publish
 
+# Etapa final de runtime
 FROM base AS final
-WORKDIR /ApiTodoList/app
-COPY --from=build /ApiTodoList/app/publish .
+WORKDIR /app
+COPY --from=build /app/publish .
+ENV ASPNETCORE_URLS=http://+:80
 ENTRYPOINT ["dotnet", "ApiTodoList.dll"]
